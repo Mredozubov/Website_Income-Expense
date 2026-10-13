@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A clear, simple dashboard for tracking income, expenses, and your current balance." />
+    <title>Ledger — Income & Expense Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#top" aria-label="Ledger home">
+          <span class="brand-mark">L</span>
+          <span>ledger</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
+          <a class="nav-item" href="#transactions"><span class="nav-icon">↔</span>Transactions</a>
+          <a class="nav-item" href="#insights"><span class="nav-icon">◒</span>Insights</a>
+        </nav>
+
+        <div class="sidebar-note">
+          <span class="sparkle">✦</span>
+          <p>Small steps add up. Keep your money visible.</p>
+        </div>
+
+        <div class="sidebar-footer">
+          <span class="avatar">MR</span>
+          <div>
+            <strong>Your ledger</strong>
+            <small>Personal workspace</small>
+          </div>
+          <button class="icon-button" type="button" aria-label="More options">•••</button>
+        </div>
+      </aside>
+
+      <main id="top" class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Personal finance</p>
+            <h1>Good evening, Michael <span class="wave">✦</span></h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="month-picker" type="button" id="monthPicker" aria-label="Current month">
+              <span class="calendar-icon">□</span><span id="currentMonth">October 2026</span><span class="chevron">⌄</span>
+            </button>
+            <button class="profile-button" type="button" aria-label="Open profile">MR</button>
+          </div>
+        </header>
+
+        <section id="overview" class="overview-section" aria-labelledby="overview-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Your snapshot</p>
+              <h2 id="overview-heading">Money overview</h2>
+            </div>
+            <span class="updated-label"><span class="status-dot"></span> Updated just now</span>
+          </div>
+
+          <div class="summary-grid">
+            <article class="balance-card card">
+              <div class="card-label"><span class="label-icon balance-icon">$</span> Total balance <span class="info-icon" title="Income minus expenses">i</span></div>
+              <p class="balance-amount" id="balanceAmount">$0.00</p>
+              <div class="balance-meta"><span class="positive-pill" id="balanceTrend">+0.0%</span><span>vs. last month</span></div>
+              <div class="balance-line"><span style="width: 74%"></span></div>
+            </article>
+
+            <article class="metric-card card">
+              <div class="card-label"><span class="label-icon income-icon">↗</span> Income</div>
+              <p class="metric-amount income-text" id="incomeAmount">$0.00</p>
+              <div class="metric-meta"><span id="incomeCount">0 transactions</span><span class="metric-badge income-badge">IN</span></div>
+            </article>
+
+            <article class="metric-card card">
+              <div class="card-label"><span class="label-icon expense-icon">↘</span> Expenses</div>
+              <p class="metric-amount expense-text" id="expenseAmount">$0.00</p>
+              <div class="metric-meta"><span id="expenseCount">0 transactions</span><span class="metric-badge expense-badge">OUT</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="workspace-grid">
+          <article id="transactions" class="transactions-card card">
+            <div class="card-header">
+              <div>
+                <p class="eyebrow">Activity</p>
+                <h2>Recent transactions</h2>
+              </div>
+              <button class="primary-button" type="button" id="openTransactionModal"><span>+</span> Add transaction</button>
+            </div>
+            <div class="transaction-toolbar">
+              <div class="filter-tabs" role="tablist" aria-label="Transaction filters">
+                <button class="filter-tab active" type="button" data-filter="all">All <span id="allCount">0</span></button>
+                <button class="filter-tab" type="button" data-filter="income">Income <span id="incomeTabCount">0</span></button>
+                <button class="filter-tab" type="button" data-filter="expense">Expenses <span id="expenseTabCount">0</span></button>
+              </div>
+              <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search transactions" /></label>
+            </div>
+            <div class="transaction-list" id="transactionList" aria-live="polite"></div>
+          </article>
+
+          <article id="insights" class="insights-card card">
+            <div class="card-header compact">
+              <div>
+                <p class="eyebrow">Where it goes</p>
+                <h2>Spending breakdown</h2>
+              </div>
+              <button class="icon-button" type="button" aria-label="More insight options">•••</button>
+            </div>
+            <div class="donut-wrap">
+              <div class="donut-chart" id="donutChart"><div class="donut-center"><strong id="donutTotal">$0</strong><span>spent</span></div></div>
+            </div>
+            <div class="category-list" id="categoryList"></div>
+            <div class="insight-tip"><span>✦</span><p><strong>Nice rhythm.</strong> Your spending is on track this month.</p></div>
+          </article>
+        </section>
+        <footer class="page-footer">Ledger keeps your data in this browser only.</footer>
+      </main>
+    </div>
+
+    <dialog class="transaction-dialog" id="transactionDialog">
+      <form method="dialog" id="transactionForm">
+        <div class="dialog-header"><div><p class="eyebrow">New activity</p><h2>Add transaction</h2></div><button class="dialog-close" value="cancel" aria-label="Close">×</button></div>
+        <label>Type<select name="type" id="typeInput"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+        <label>Description<input name="description" id="descriptionInput" required maxlength="48" placeholder="e.g. Coffee, paycheck" /></label>
+        <div class="form-row"><label>Amount<input name="amount" id="amountInput" required type="number" min="0.01" step="0.01" placeholder="0.00" /></label><label>Category<select name="category" id="categoryInput"><option>Food & dining</option><option>Housing</option><option>Transport</option><option>Shopping</option><option>Health</option><option>Entertainment</option><option>Salary</option><option>Other</option></select></label></div>
+        <label>Date<input name="date" id="dateInput" required type="date" /></label>
+        <div class="dialog-actions"><button class="secondary-button" type="button" id="cancelDialog">Cancel</button><button class="primary-button" type="submit">Save transaction</button></div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
