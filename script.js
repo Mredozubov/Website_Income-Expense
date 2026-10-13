@@ -79,8 +79,32 @@ function renderTable() {
   }));
 }
 
+function buildHistoryDates() {
+  const dates = [];
+  const cursor = new Date("2026-01-01T12:00:00");
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  while (cursor <= today) { dates.push(new Date(cursor)); cursor.setDate(cursor.getDate() + 14); }
+  if (!dates.length || dates[dates.length - 1].toDateString() !== today.toDateString()) dates.push(today);
+  return dates;
+}
+
+function parseMainValue(value) {
+  const match = String(value).replaceAll(",", "").match(/-?\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : 0;
+}
+
 function renderHistory() {
-  $("#historyTable").innerHTML = historyEntries.map((entry) => `<tr><td>${escapeHTML(entry.name)}</td>${entry.values.flat().map((value, index) => `<td class="${index % 2 === 0 ? "history-main" : "history-secondary"}">${escapeHTML(value)}</td>`).join("")}</tr>`).join("");
+  const dates = buildHistoryDates();
+  const formatHistoryDate = (date) => new Intl.DateTimeFormat("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }).format(date);
+  const totals = dates.map((_, dateIndex) => historyEntries.reduce((sum, entry) => sum + parseMainValue(entry.values[dateIndex % entry.values.length][0]), 0));
+  const totalProfit = totals.reduce((sum, total) => sum + total, 0);
+  const cumulativeTotals = totals.reduce((runningTotals, total) => [...runningTotals, (runningTotals.at(-1) || 0) + total], []);
+  $("#historyProfitTotal").textContent = money(totalProfit);
+  $("#historyHead").innerHTML = `<tr><th scope="col" rowspan="2" class="history-name-heading">Name</th>${dates.map((date) => `<th scope="col" colspan="2">${formatHistoryDate(date)}</th>`).join("")}</tr><tr class="history-subhead">${dates.map(() => "<th scope=\"col\">Main</th><th scope=\"col\">Secondary</th>").join("")}</tr>`;
+  const rows = historyEntries.map((entry) => `<tr><td>${escapeHTML(entry.name)}</td>${dates.map((_, dateIndex) => entry.values[dateIndex % entry.values.length]).flat().map((value, index) => { const flexible = index % 2 === 0 && String(value).includes("*"); return `<td class="${index % 2 === 0 ? "history-main" : "history-secondary"}${flexible ? " history-flexible" : ""}"${flexible ? " title=\"May change\"" : ""}>${escapeHTML(value)}</td>`; }).join("")}</tr>`).join("");
+  const totalRow = `<tr class="total-profit-row"><td>Total profit</td>${cumulativeTotals.map((total) => `<td class="history-main">${money(total)}</td><td class="history-secondary">—</td>`).join("")}</tr>`;
+  $("#historyTable").innerHTML = rows + totalRow;
 }
 
 function showToast(message) { const toast = $("#toast"); toast.textContent = message; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2200); }
