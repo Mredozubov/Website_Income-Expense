@@ -6,6 +6,31 @@ const seedEntries = [
   { id: 5, name: "Freelance tools", type: "expense", amount: 49, frequency: "monthly", start: "2026-10-08" },
 ];
 
+const historyEntries = [
+  { name: "Citibank", values: [["402", "0"], ["402", "0"], ["402", "0"]] },
+  { name: "Chase checking now", values: [["Syc tax-1520", "0"], ["Crg tax-400", "0"], ["", "0"]] },
+  { name: "BB apartment", values: [["1900", "0"], ["1900", "0"], ["1900", "0"]] },
+  { name: "Marlin Clay Rent", values: [["1900", "0"], ["1900", "0"], ["1900", "0"]] },
+  { name: "Tatyana job", values: [["2840", "0"], ["2840", "0"], ["2840", "0"]] },
+  { name: "Dmitriy job", values: [["3101", "0"], ["3101", "0"], ["3101", "0"]] },
+  { name: "Mama", values: [["870", "0"], ["870", "0"], ["870", "0"]] },
+  { name: "House NY", values: [["-3196", "0"], ["-3196", "0"], ["-3196", "0"]] },
+  { name: "Lucas Clay Rent", values: [["-788", "0"], ["-788", "0"], ["-788", "0"]] },
+  { name: "NTL GRID Gas Bkln", values: [["-150*", "0"], ["-150*", "0"], ["-150*", "0"]] },
+  { name: "Chase Tatyana", values: [["-100*", "0"], ["-100*", "0"], ["-100*", "0"]] },
+  { name: "Chase Dima", values: [["-725", "0"], ["-725", "0"], ["-725", "0"]] },
+  { name: "Basement rent", values: [["1400", "0"], ["1400", "0"], ["1400", "0"]] },
+  { name: "Verizon", values: [["-75", "0"], ["-75", "0"], ["-75", "0"]] },
+  { name: "9 Eagle FL Cooper mgtg", values: [["-1222", "0"], ["-1222", "0"], ["-1222", "0"]] },
+  { name: "Water 1,4,7,10", values: [["-185*", "-"], ["", "0"], ["", "0"]] },
+  { name: "PC Rent", values: [["4339", "0"], ["4339", "0"], ["4339", "0"]] },
+  { name: "Duplex FL Truist mtgt", values: [["-1134", "0"], ["-1134", "0"], ["-1134", "0"]] },
+  { name: "Conedison Bkln", values: [["-172", "0"], ["-172", "0"], ["-172", "0"]] },
+  { name: "3100 Owners", values: [["-728", "0"], ["-728", "0"], ["-728", "0"]] },
+  { name: "Infiniti", values: [["-570", "0"], ["-570", "0"], ["-570", "0"]] },
+  { name: "TMobile", values: [["", "0"], ["-224", "0"], ["", "0"]] },
+];
+
 const storageKey = "ledger-table-entries-v2";
 const state = { entries: JSON.parse(localStorage.getItem(storageKey) || "null") || seedEntries, filter: "all", query: "" };
 const $ = (selector) => document.querySelector(selector);
@@ -54,6 +79,10 @@ function renderTable() {
   }));
 }
 
+function renderHistory() {
+  $("#historyTable").innerHTML = historyEntries.map((entry) => `<tr><td>${escapeHTML(entry.name)}</td>${entry.values.flat().map((value, index) => `<td class="${index % 2 === 0 ? "history-main" : "history-secondary"}">${escapeHTML(value)}</td>`).join("")}</tr>`).join("");
+}
+
 function showToast(message) { const toast = $("#toast"); toast.textContent = message; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2200); }
 
 $("#entryForm").addEventListener("submit", (event) => {
@@ -65,4 +94,9 @@ $("#entryForm").addEventListener("submit", (event) => {
 document.querySelectorAll(".filter-tab").forEach((tab) => tab.addEventListener("click", () => { state.filter = tab.dataset.filter; document.querySelectorAll(".filter-tab").forEach((item) => item.classList.toggle("active", item === tab)); renderTable(); }));
 $("#searchInput").addEventListener("input", (event) => { state.query = event.target.value; renderTable(); });
 $("#todayLabel").textContent = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date());
+document.querySelectorAll(".view-tab").forEach((tab) => tab.addEventListener("click", () => {
+  document.querySelectorAll(".view-tab").forEach((item) => item.classList.toggle("active", item === tab));
+  document.querySelectorAll(".view-panel").forEach((panel) => { panel.hidden = panel.id !== tab.dataset.view; });
+}));
+renderHistory();
 render();

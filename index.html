@@ -14,6 +14,10 @@
     <main class="page-shell">
       <header class="page-header">
         <div class="brand"><span class="brand-mark">L</span><span>ledger</span></div>
+        <nav class="view-tabs" aria-label="Ledger views">
+          <button class="view-tab active" type="button" data-view="plannerView">Planner</button>
+          <button class="view-tab" type="button" data-view="historyView">History <span>22</span></button>
+        </nav>
         <div class="header-note"><span class="status-dot"></span> Saved in this browser</div>
       </header>
 
@@ -26,6 +30,7 @@
         <div class="date-chip"><span>◷</span><span id="todayLabel">October 13, 2026</span></div>
       </section>
 
+      <div id="plannerView" class="view-panel">
       <section class="summary-grid" aria-label="Totals">
         <article class="summary-card income-card"><span class="summary-label"><span class="summary-icon">↗</span> Total income</span><strong id="incomeTotal">$0.00</strong><small id="incomeCount">0 items</small></article>
         <article class="summary-card expense-card"><span class="summary-label"><span class="summary-icon">↘</span> Total expenses</span><strong id="expenseTotal">$0.00</strong><small id="expenseCount">0 items</small></article>
@@ -54,6 +59,18 @@
           </table>
         </div>
         <div class="empty-state" id="emptyState" hidden><span class="empty-icon">＋</span><strong>No rows yet</strong><p>Add your first income or expense above.</p></div>
+      </section>
+      </div>
+
+      <section id="historyView" class="history-view view-panel" hidden aria-labelledby="history-heading">
+        <div class="history-heading"><div><p class="eyebrow">Imported snapshot</p><h2 id="history-heading">History</h2><p class="history-copy">Pre-established records from January 2026.</p></div><span class="history-count">22 records</span></div>
+        <div class="history-note"><span>i</span><p>The main and secondary values below are preserved as shown in your source table. No meaning has been inferred for the secondary values.</p></div>
+        <div class="history-scroll">
+          <table class="history-table">
+            <thead><tr><th scope="col" rowspan="2" class="history-name-heading">Name</th><th scope="col" colspan="2">01/01/2026</th><th scope="col" colspan="2">01/15/2026</th><th scope="col" colspan="2">01/29/2026</th></tr><tr class="history-subhead"><th scope="col">Main</th><th scope="col">Secondary</th><th scope="col">Main</th><th scope="col">Secondary</th><th scope="col">Main</th><th scope="col">Secondary</th></tr></thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
       </section>
       <footer>Ledger is a simple local tracker. Your entries stay on this device.</footer>
     </main>
