@@ -3,136 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A clear, simple dashboard for tracking income, expenses, and your current balance." />
-    <title>Ledger — Income & Expense Tracker</title>
+    <meta name="description" content="A simple table for tracking income, expenses, amounts, frequencies, and start dates." />
+    <title>Ledger — Income & Expense Table</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="sidebar">
-        <a class="brand" href="#top" aria-label="Ledger home">
-          <span class="brand-mark">L</span>
-          <span>ledger</span>
-        </a>
+    <main class="page-shell">
+      <header class="page-header">
+        <div class="brand"><span class="brand-mark">L</span><span>ledger</span></div>
+        <div class="header-note"><span class="status-dot"></span> Saved in this browser</div>
+      </header>
 
-        <nav class="main-nav" aria-label="Main navigation">
-          <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
-          <a class="nav-item" href="#transactions"><span class="nav-icon">↔</span>Transactions</a>
-          <a class="nav-item" href="#insights"><span class="nav-icon">◒</span>Insights</a>
-        </nav>
-
-        <div class="sidebar-note">
-          <span class="sparkle">✦</span>
-          <p>Small steps add up. Keep your money visible.</p>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Personal finance planner</p>
+          <h1 id="page-title">Income & expenses</h1>
+          <p class="intro-copy">Keep every money-in and money-out item in one clear table.</p>
         </div>
+        <div class="date-chip"><span>◷</span><span id="todayLabel">October 13, 2026</span></div>
+      </section>
 
-        <div class="sidebar-footer">
-          <span class="avatar">MR</span>
-          <div>
-            <strong>Your ledger</strong>
-            <small>Personal workspace</small>
-          </div>
-          <button class="icon-button" type="button" aria-label="More options">•••</button>
+      <section class="summary-grid" aria-label="Totals">
+        <article class="summary-card income-card"><span class="summary-label"><span class="summary-icon">↗</span> Total income</span><strong id="incomeTotal">$0.00</strong><small id="incomeCount">0 items</small></article>
+        <article class="summary-card expense-card"><span class="summary-label"><span class="summary-icon">↘</span> Total expenses</span><strong id="expenseTotal">$0.00</strong><small id="expenseCount">0 items</small></article>
+        <article class="summary-card balance-card"><span class="summary-label"><span class="summary-icon">=</span> Total balance</span><strong id="balanceTotal">$0.00</strong><small>Income minus expenses</small></article>
+      </section>
+
+      <section class="add-section" aria-labelledby="add-heading">
+        <div class="section-heading"><div><p class="eyebrow">Add a row</p><h2 id="add-heading">New income or expense</h2></div><span class="required-note">All fields are required</span></div>
+        <form class="entry-form" id="entryForm">
+          <label>What is it?<input id="nameInput" name="name" required maxlength="50" placeholder="e.g. Paycheck, rent, groceries" /></label>
+          <label>Type<select id="typeInput" name="type"><option value="income">Income</option><option value="expense">Expense</option></select></label>
+          <label>Amount<input id="amountInput" name="amount" required type="number" min="0.01" step="0.01" placeholder="0.00" /></label>
+          <label>Frequency<select id="frequencyInput" name="frequency"><option value="one-time">One time</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="biweekly">Every 2 weeks</option><option value="monthly" selected>Monthly</option><option value="yearly">Yearly</option></select></label>
+          <label>Starts on<input id="startInput" name="start" required type="date" value="2026-10-13" /></label>
+          <button class="primary-button" type="submit"><span>+</span> Add to table</button>
+        </form>
+      </section>
+
+      <section class="table-section" aria-labelledby="table-heading">
+        <div class="table-toolbar"><div><p class="eyebrow">Your plan</p><h2 id="table-heading">Income & expense table</h2></div><label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search rows" /></label></div>
+        <div class="filter-row"><div class="filter-tabs" role="tablist" aria-label="Filter table"><button class="filter-tab active" type="button" data-filter="all">All <span id="allCount">0</span></button><button class="filter-tab" type="button" data-filter="income">Income <span id="incomeTabCount">0</span></button><button class="filter-tab" type="button" data-filter="expense">Expenses <span id="expenseTabCount">0</span></button></div><span class="table-hint">Click the trash icon to remove a row</span></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Amount</th><th scope="col">Frequency</th><th scope="col">Starts on</th><th scope="col" class="action-heading"><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody id="entriesTable"></tbody>
+          </table>
         </div>
-      </aside>
-
-      <main id="top" class="main-content">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">Personal finance</p>
-            <h1>Good evening, Michael <span class="wave">✦</span></h1>
-          </div>
-          <div class="topbar-actions">
-            <button class="month-picker" type="button" id="monthPicker" aria-label="Current month">
-              <span class="calendar-icon">□</span><span id="currentMonth">October 2026</span><span class="chevron">⌄</span>
-            </button>
-            <button class="profile-button" type="button" aria-label="Open profile">MR</button>
-          </div>
-        </header>
-
-        <section id="overview" class="overview-section" aria-labelledby="overview-heading">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Your snapshot</p>
-              <h2 id="overview-heading">Money overview</h2>
-            </div>
-            <span class="updated-label"><span class="status-dot"></span> Updated just now</span>
-          </div>
-
-          <div class="summary-grid">
-            <article class="balance-card card">
-              <div class="card-label"><span class="label-icon balance-icon">$</span> Total balance <span class="info-icon" title="Income minus expenses">i</span></div>
-              <p class="balance-amount" id="balanceAmount">$0.00</p>
-              <div class="balance-meta"><span class="positive-pill" id="balanceTrend">+0.0%</span><span>vs. last month</span></div>
-              <div class="balance-line"><span style="width: 74%"></span></div>
-            </article>
-
-            <article class="metric-card card">
-              <div class="card-label"><span class="label-icon income-icon">↗</span> Income</div>
-              <p class="metric-amount income-text" id="incomeAmount">$0.00</p>
-              <div class="metric-meta"><span id="incomeCount">0 transactions</span><span class="metric-badge income-badge">IN</span></div>
-            </article>
-
-            <article class="metric-card card">
-              <div class="card-label"><span class="label-icon expense-icon">↘</span> Expenses</div>
-              <p class="metric-amount expense-text" id="expenseAmount">$0.00</p>
-              <div class="metric-meta"><span id="expenseCount">0 transactions</span><span class="metric-badge expense-badge">OUT</span></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="workspace-grid">
-          <article id="transactions" class="transactions-card card">
-            <div class="card-header">
-              <div>
-                <p class="eyebrow">Activity</p>
-                <h2>Recent transactions</h2>
-              </div>
-              <button class="primary-button" type="button" id="openTransactionModal"><span>+</span> Add transaction</button>
-            </div>
-            <div class="transaction-toolbar">
-              <div class="filter-tabs" role="tablist" aria-label="Transaction filters">
-                <button class="filter-tab active" type="button" data-filter="all">All <span id="allCount">0</span></button>
-                <button class="filter-tab" type="button" data-filter="income">Income <span id="incomeTabCount">0</span></button>
-                <button class="filter-tab" type="button" data-filter="expense">Expenses <span id="expenseTabCount">0</span></button>
-              </div>
-              <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search transactions" /></label>
-            </div>
-            <div class="transaction-list" id="transactionList" aria-live="polite"></div>
-          </article>
-
-          <article id="insights" class="insights-card card">
-            <div class="card-header compact">
-              <div>
-                <p class="eyebrow">Where it goes</p>
-                <h2>Spending breakdown</h2>
-              </div>
-              <button class="icon-button" type="button" aria-label="More insight options">•••</button>
-            </div>
-            <div class="donut-wrap">
-              <div class="donut-chart" id="donutChart"><div class="donut-center"><strong id="donutTotal">$0</strong><span>spent</span></div></div>
-            </div>
-            <div class="category-list" id="categoryList"></div>
-            <div class="insight-tip"><span>✦</span><p><strong>Nice rhythm.</strong> Your spending is on track this month.</p></div>
-          </article>
-        </section>
-        <footer class="page-footer">Ledger keeps your data in this browser only.</footer>
-      </main>
-    </div>
-
-    <dialog class="transaction-dialog" id="transactionDialog">
-      <form method="dialog" id="transactionForm">
-        <div class="dialog-header"><div><p class="eyebrow">New activity</p><h2>Add transaction</h2></div><button class="dialog-close" value="cancel" aria-label="Close">×</button></div>
-        <label>Type<select name="type" id="typeInput"><option value="expense">Expense</option><option value="income">Income</option></select></label>
-        <label>Description<input name="description" id="descriptionInput" required maxlength="48" placeholder="e.g. Coffee, paycheck" /></label>
-        <div class="form-row"><label>Amount<input name="amount" id="amountInput" required type="number" min="0.01" step="0.01" placeholder="0.00" /></label><label>Category<select name="category" id="categoryInput"><option>Food & dining</option><option>Housing</option><option>Transport</option><option>Shopping</option><option>Health</option><option>Entertainment</option><option>Salary</option><option>Other</option></select></label></div>
-        <label>Date<input name="date" id="dateInput" required type="date" /></label>
-        <div class="dialog-actions"><button class="secondary-button" type="button" id="cancelDialog">Cancel</button><button class="primary-button" type="submit">Save transaction</button></div>
-      </form>
-    </dialog>
+        <div class="empty-state" id="emptyState" hidden><span class="empty-icon">＋</span><strong>No rows yet</strong><p>Add your first income or expense above.</p></div>
+      </section>
+      <footer>Ledger is a simple local tracker. Your entries stay on this device.</footer>
+    </main>
     <div class="toast" id="toast" role="status"></div>
     <script src="script.js"></script>
   </body>
