@@ -1,9 +1,25 @@
 const seedEntries = [
-  { id: 1, name: "Monthly paycheck", type: "income", amount: 4200, frequency: "monthly", start: "2026-10-01" },
-  { id: 2, name: "Apartment rent", type: "expense", amount: 1450, frequency: "monthly", start: "2026-10-02" },
-  { id: 3, name: "Groceries", type: "expense", amount: 86.42, frequency: "weekly", start: "2026-10-05" },
-  { id: 4, name: "Subway pass", type: "expense", amount: 127, frequency: "monthly", start: "2026-10-06" },
-  { id: 5, name: "Freelance tools", type: "expense", amount: 49, frequency: "monthly", start: "2026-10-08" },
+  { id: 1, name: "Citibank", type: "income", amount: 402, frequency: "biweekly", start: "2026-10-13" },
+  { id: 2, name: "Chase checking now — Syc tax", type: "expense", amount: 1520, frequency: "biweekly", start: "2026-10-13" },
+  { id: 3, name: "BB apartment", type: "income", amount: 1900, frequency: "biweekly", start: "2026-10-13" },
+  { id: 4, name: "Marlin Clay Rent", type: "income", amount: 1900, frequency: "biweekly", start: "2026-10-13" },
+  { id: 5, name: "Tatyana job", type: "income", amount: 2840, frequency: "biweekly", start: "2026-10-13" },
+  { id: 6, name: "Dmitriy job", type: "income", amount: 3101, frequency: "biweekly", start: "2026-10-13" },
+  { id: 7, name: "Mama", type: "income", amount: 870, frequency: "biweekly", start: "2026-10-13" },
+  { id: 8, name: "House NY", type: "expense", amount: 3196, frequency: "biweekly", start: "2026-10-13" },
+  { id: 9, name: "Lucas Clay Rent", type: "expense", amount: 788, frequency: "biweekly", start: "2026-10-13" },
+  { id: 10, name: "NTL GRID Gas Bkln", type: "expense", amount: 150, flexible: true, frequency: "biweekly", start: "2026-10-13" },
+  { id: 11, name: "Chase Tatyana", type: "expense", amount: 100, flexible: true, frequency: "biweekly", start: "2026-10-13" },
+  { id: 12, name: "Chase Dima", type: "expense", amount: 725, frequency: "biweekly", start: "2026-10-13" },
+  { id: 13, name: "Basement rent", type: "income", amount: 1400, frequency: "biweekly", start: "2026-10-13" },
+  { id: 14, name: "Verizon", type: "expense", amount: 75, frequency: "biweekly", start: "2026-10-13" },
+  { id: 15, name: "9 Eagle FL Cooper mgtg", type: "expense", amount: 1222, frequency: "biweekly", start: "2026-10-13" },
+  { id: 16, name: "Water 1,4,7,10", type: "expense", amount: 185, flexible: true, frequency: "biweekly", start: "2026-10-13" },
+  { id: 17, name: "PC Rent", type: "income", amount: 4339, frequency: "biweekly", start: "2026-10-13" },
+  { id: 18, name: "Duplex FL Truist mtgt", type: "expense", amount: 1134, frequency: "biweekly", start: "2026-10-13" },
+  { id: 19, name: "Conedison Bkln", type: "expense", amount: 172, frequency: "biweekly", start: "2026-10-13" },
+  { id: 20, name: "3100 Owners", type: "expense", amount: 728, frequency: "biweekly", start: "2026-10-13" },
+  { id: 21, name: "Infiniti", type: "expense", amount: 570, frequency: "biweekly", start: "2026-10-13" },
 ];
 
 const historyEntries = [
@@ -31,7 +47,7 @@ const historyEntries = [
   { name: "TMobile", values: [["", "0"], ["-224", "0"], ["", "0"]] },
 ];
 
-const storageKey = "ledger-table-entries-v2";
+const storageKey = "ledger-table-entries-v3";
 const state = { entries: JSON.parse(localStorage.getItem(storageKey) || "null") || seedEntries, filter: "all", query: "" };
 const $ = (selector) => document.querySelector(selector);
 const money = (amount) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
@@ -68,7 +84,7 @@ function renderTable() {
   tbody.innerHTML = matching.map((entry) => `<tr>
     <td><div class="entry-name"><span class="entry-mark ${entry.type}">${entry.type === "income" ? "↗" : "↘"}</span>${escapeHTML(entry.name)}</div></td>
     <td><span class="type-pill ${entry.type}">${entry.type === "income" ? "Income" : "Expense"}</span></td>
-    <td class="amount ${entry.type}">${entry.type === "income" ? "+" : "−"}${money(entry.amount)}</td>
+    <td class="amount ${entry.type}${entry.flexible ? " history-flexible" : ""}"${entry.flexible ? " title=\"May change\"" : ""}>${entry.type === "income" ? "+" : "−"}${money(entry.amount)}${entry.flexible ? "*" : ""}</td>
     <td><span class="frequency-pill">${frequencyLabel[entry.frequency]}</span></td>
     <td class="start-date">${formatDate(entry.start)}</td>
     <td><button class="delete-button" data-delete="${entry.id}" type="button" aria-label="Delete ${escapeHTML(entry.name)}">×</button></td>
